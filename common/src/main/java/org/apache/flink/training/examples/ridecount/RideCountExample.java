@@ -28,7 +28,7 @@ import org.apache.flink.training.exercises.common.sources.TaxiRideGenerator;
 
 /**
  * Example that counts the rides for each driver.
- *
+ *      统计每个司机的接单次数
  * <p>Note that this is implicitly keeping state for each driver. This sort of simple, non-windowed
  * aggregation on an unbounded set of keys will use an unbounded amount of state. When this is an
  * issue, look at the SQL/Table API, or ProcessFunction, or state TTL, all of which provide

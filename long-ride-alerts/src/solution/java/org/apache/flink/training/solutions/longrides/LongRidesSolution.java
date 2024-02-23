@@ -98,6 +98,7 @@ public class LongRidesSolution {
         job.execute();
     }
 
+    //提示持续超过两个小时的出租车车程发出警报
     @VisibleForTesting
     public static class AlertFunction extends KeyedProcessFunction<Long, TaxiRide, Long> {
 
@@ -110,6 +111,16 @@ public class LongRidesSolution {
             rideState = getRuntimeContext().getState(rideStateDescriptor);
         }
 
+        /**
+         * <b>概要：</b>
+         * TODO 描述该方法的功能
+         * <b>作者：</b>suxh</br>
+         * <b>日期：</b>2024/2/23 10:56</br>
+         * @param ride 当前流中的输入元素，也就是正在处理的数据，类型与流中数据类型一致
+         * @param context 表示当前运行的上下文，可以获取到当前的时间戳，并提供了用于查询时间和注册定时器的“定时服务”(TimerService)，以及可以将数据发送到“侧输出流”（side output）的方法.output()。
+         * @param out 用于返回输出数据
+         * @return
+         **/
         @Override
         public void processElement(TaxiRide ride, Context context, Collector<Long> out)
                 throws Exception {
@@ -126,11 +137,11 @@ public class LongRidesSolution {
                     context.timerService().registerEventTimeTimer(getTimerTime(ride));
                 }
             } else {
-                if (ride.isStart) {
+                if (ride.isStart) {//当前是ride事件是开始事件 firstRideEvent事件为结束事件
                     if (rideTooLong(ride, firstRideEvent)) {
                         out.collect(ride.rideId);
                     }
-                } else {
+                } else {//当前是ride事件是结束事件 firstRideEvent事件为开始事件
                     // the first ride was a START event, so there is a timer unless it has fired
                     context.timerService().deleteEventTimeTimer(getTimerTime(firstRideEvent));
 
@@ -147,10 +158,13 @@ public class LongRidesSolution {
             }
         }
 
+        //用于定义定时触发的操作，这是一个非常强大、也非常有趣的功能。这个方法只有在注册好的定时器触发的时候才会调用，
+        // 而定时器是通过“定时服务”TimerService 来注册的。打个比方，注册定时器（timer）就是设了一个闹钟，到了设定时间就会响；
+        // 而.onTimer()中定义的，就是闹钟响的时候要做的事。
         @Override
         public void onTimer(long timestamp, OnTimerContext context, Collector<Long> out)
                 throws Exception {
-
+            //超过两个小时了要触发
             // the timer only fires if the ride was too long
             out.collect(rideState.value().rideId);
 

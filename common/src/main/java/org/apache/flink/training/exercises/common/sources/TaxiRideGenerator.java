@@ -28,7 +28,7 @@ import java.util.Random;
 
 /**
  * This SourceFunction generates a data stream of TaxiRide records.
- *
+ *  数据生成器(generators)产生模拟的事件流
  * <p>The stream is produced out-of-order.
  */
 public class TaxiRideGenerator implements SourceFunction<TaxiRide> {

@@ -32,6 +32,9 @@ import java.util.Objects;
 /**
  * A TaxiRide is a taxi ride event. There are two types of events, a taxi ride start event and a
  * taxi ride end event. The isStart flag specifies the type of the event.
+ * 出租车车程(taxi ride)事件结构
+ * 出租车数据集包含有关纽约市个人出租车的车程信息。
+ * 每次车程都由两个事件表示：行程开始(trip start)和行程结束(trip end)。
  *
  * <p>A TaxiRide consists of - the rideId of the event which is identical for start and end record -
  * the type of the event (start or end) - the time of the event - the longitude of the start
@@ -85,15 +88,25 @@ public class TaxiRide implements Comparable<TaxiRide>, Serializable {
         this.driverId = driverId;
     }
 
+    /** 每次车程的唯一id */
     public long rideId;
+    /** 行程开始事件为 TRUE， 行程结束事件为 FALSE */
     public boolean isStart;
+    /** 事件发生的时间 */
     public Instant eventTime;
+    /** 车程开始位置的经度 */
     public float startLon;
+    /** 车程开始位置的维度 */
     public float startLat;
+    /** 车程结束位置的经度 */
     public float endLon;
+    /** 车程结束位置的维度 */
     public float endLat;
+    /** 乘车人数 */
     public short passengerCnt;
+    /** 每一辆出租车的唯一id */
     public long taxiId;
+    /** 每一位司机的唯一id */
     public long driverId;
 
     @Override

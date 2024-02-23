@@ -27,7 +27,7 @@ import java.time.Instant;
 
 /**
  * This SourceFunction generates a data stream of TaxiFare records.
- *
+ *  数据生成器(generators)产生模拟的事件流
  * <p>The stream is generated in order.
  */
 public class TaxiFareGenerator implements SourceFunction<TaxiFare> {
@@ -57,6 +57,7 @@ public class TaxiFareGenerator implements SourceFunction<TaxiFare> {
 
             ++id;
             ctx.collect(fare);
+            System.out.println(fare);
 
             // match our event production rate to that of the TaxiRideGenerator
             Thread.sleep(TaxiRideGenerator.SLEEP_MILLIS_PER_EVENT);

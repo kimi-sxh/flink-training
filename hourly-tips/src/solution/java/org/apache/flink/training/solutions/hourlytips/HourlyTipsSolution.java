@@ -68,7 +68,10 @@ public class HourlyTipsSolution {
 
     /**
      * Create and execute the hourly tips pipeline.
-     *
+     *  所希望的结果是每小时产生一个 Tuple3<Long, Long, Float> 记录的数据流。
+     *  这个记录（Tuple3<Long, Long, Float>）应包含该小时结束时的时间戳（对应三元组的第一个元素）、
+     *  该小时内获得小费最多的司机的 driverId（对应三元组的第二个元素）以及他的实际小费总数（对应三元组的第三个元素））。
+     * 结果流应打印到标准输出。
      * @return {JobExecutionResult}
      * @throws Exception which occurs during job execution.
      */
@@ -87,12 +90,14 @@ public class HourlyTipsSolution {
                                                 (fare, t) -> fare.getEventTimeMillis()));
 
         // compute tips per hour for each driver
+        // 得到一个由 driverId 键值分隔的具有一小时窗口的初始数据集  并使用它来创建一个 (endOfHourTimestamp，driverId，totalTips) 流
         DataStream<Tuple3<Long, Long, Float>> hourlyTips =
                 fares.keyBy((TaxiFare fare) -> fare.driverId)
-                        .window(TumblingEventTimeWindows.of(Time.hours(1)))
+                        .window(TumblingEventTimeWindows.of(Time.hours(1)))//滑动
                         .process(new AddTips());
 
         // find the driver with the highest sum of tips for each hour
+        // 然后使用另一个一小时窗口（该窗口不是用键值分隔的），从第一个窗口中查找具有最大 totalTips 的记录。
         DataStream<Tuple3<Long, Long, Float>> hourlyMax =
                 hourlyTips.windowAll(TumblingEventTimeWindows.of(Time.hours(1))).maxBy(2);
 

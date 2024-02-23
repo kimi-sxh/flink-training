@@ -49,7 +49,7 @@ public class GeoUtils {
     /**
      * Checks if a location specified by longitude and latitude values is within the geo boundaries
      * of New York City.
-     *
+     *  检查位置是否在纽约境内
      * @param lon longitude of the location to check
      * @param lat latitude of the location to check
      * @return true if the location is within NYC boundaries, otherwise false.

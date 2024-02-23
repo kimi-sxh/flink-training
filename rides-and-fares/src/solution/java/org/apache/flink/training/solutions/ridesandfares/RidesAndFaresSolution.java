@@ -120,6 +120,9 @@ public class RidesAndFaresSolution {
         job.execute(env);
     }
 
+    //可以使用 RichCoFlatMap 来实现连接操作 请注意，你无法控制每个 rideId 的车程和车费记录的到达顺序，
+    // 因此需要存储其中一个事件，直到与其匹配的另一事件到达。 此时你可以创建并发出 RideAndFare 以将两条记录连接在一起。
+    //出于练习的目的，可以假设 START 和 fare 事件完美配对。 但是在现实世界的应用程序中，你应该担心每当一个事件丢失时，同一个 rideId 的另一个事件的状态将被永远保持。
     public static class EnrichmentFunction
             extends RichCoFlatMapFunction<TaxiRide, TaxiFare, RideAndFare> {
 
@@ -149,6 +152,7 @@ public class RidesAndFaresSolution {
             }
         }
 
+        //应该使用由 Flink 管理的、按键值分割(keyed)的状态来缓冲想要暂时保存的数据，直到匹配事件到达，并确保在不再需要时清除该状态。
         @Override
         public void flatMap2(TaxiFare fare, Collector<RideAndFare> out) throws Exception {
 

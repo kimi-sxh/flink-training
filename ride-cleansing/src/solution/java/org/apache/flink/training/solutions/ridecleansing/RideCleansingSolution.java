@@ -53,7 +53,7 @@ public class RideCleansingSolution {
      */
     public static void main(String[] args) throws Exception {
         RideCleansingSolution job =
-                new RideCleansingSolution(new TaxiRideGenerator(), new PrintSinkFunction<>());
+                new RideCleansingSolution(new TaxiRideGenerator(), new PrintSinkFunction<>());//打印流包装对象的toString方法
 
         job.execute();
     }
